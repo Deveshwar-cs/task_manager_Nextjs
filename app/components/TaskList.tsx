@@ -3,7 +3,13 @@ import {useEffect, useState} from "react";
 
 import TaskCard from "./TaskCard";
 
-import type {Task, ApiDataResponse, ApiResponse} from "../type/task";
+import type {
+  Task,
+  ApiDataResponse,
+  ApiResponse,
+  CreateTaskResponse,
+  CreateTaskRequest,
+} from "../type/task";
 
 type TaskFilter = "all" | "pending" | "completed";
 
@@ -57,15 +63,16 @@ export default function TaskList() {
     try {
       setError(null);
 
+      const payload: CreateTaskRequest = {title};
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify({title}),
+        body: JSON.stringify(payload),
       });
 
-      const result: ApiResponse<Task> = await response.json();
+      const result: CreateTaskResponse = await response.json();
 
       if (!response.ok || !result.success || !result.data) {
         throw new Error(result.message ?? "Failed to create task");
@@ -97,7 +104,7 @@ export default function TaskList() {
         }),
       });
 
-      const result: apiResponse<Task> = await response.json();
+      const result: ApiResponse<Task> = await response.json();
 
       if (!response.ok || !result.success || !result.data) {
         throw new Error(result.message ?? "Failed to update task");
@@ -118,7 +125,7 @@ export default function TaskList() {
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "DELETE",
       });
-      const result: apiResponse<Task> = await response.json();
+      const result: ApiResponse<Task> = await response.json();
 
       if (!response.ok || !result.success || !result.data) {
         throw new Error(result.message ?? "Failed to update task");

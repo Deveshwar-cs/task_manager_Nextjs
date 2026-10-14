@@ -17,4 +17,19 @@ export type ApiDataResponse<T> = {
   message?: string;
 };
 
-export type CreateTask
+export type CreateTaskSuccess = {
+  success: true;
+  message: string;
+  data: Task;
+};
+
+export type CreateTaskFailure = {
+  success: false;
+  message: string;
+};
+
+export type CreateTaskResponse = CreateTaskSuccess | CreateTaskFailure;
+
+export type CreateTaskRequest = {
+  title: string;
+};
