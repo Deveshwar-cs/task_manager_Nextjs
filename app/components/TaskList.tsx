@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 
 import TaskCard from "./TaskCard";
 
-import type {Task} from "../type/task";
+import type {Task, apiDataResponse, apiResponse} from "../type/task";
 
 type TaskFilter = "all" | "pending" | "completed";
 
@@ -23,8 +23,7 @@ export default function TaskList() {
           throw new Error("Failed to load tasks");
         }
 
-        const result: {success: boolean; data: Task[]} = await response.json();
-        console.log("Result", result.data);
+        const result: apiDataResponse<Task[]> = await response.json();
 
         setTasks(result.data);
       } catch {
@@ -66,11 +65,7 @@ export default function TaskList() {
         body: JSON.stringify({title}),
       });
 
-      const result: {success: boolean; data?: Task; message?: string} =
-        await response.json();
-
-      console.log(response);
-      console.log(result);
+      const result: apiResponse<Task> = await response.json();
 
       if (!response.ok || !result.success || !result.data) {
         throw new Error(result.message ?? "Failed to create task");
@@ -102,8 +97,7 @@ export default function TaskList() {
         }),
       });
 
-      const result: {success: boolean; data?: Task; message?: string} =
-        await response.json();
+      const result: apiResponse<Task> = await response.json();
 
       if (!response.ok || !result.success || !result.data) {
         throw new Error(result.message ?? "Failed to update task");
@@ -124,10 +118,7 @@ export default function TaskList() {
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "DELETE",
       });
-      const result: {success: boolean; data?: Task; message?: string} =
-        await response.json();
-      console.log(response);
-      console.log(result);
+      const result: apiResponse<Task> = await response.json();
 
       if (!response.ok || !result.success || !result.data) {
         throw new Error(result.message ?? "Failed to update task");
@@ -202,6 +193,7 @@ export default function TaskList() {
       {filterTasks.map((task) => (
         <TaskCard
           key={task.id}
+          id={task.id}
           title={task.title}
           completed={task.completed}
           onToggle={() => toggleTask(task.id)}

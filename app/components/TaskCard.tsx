@@ -1,24 +1,33 @@
 type TaskCardProps = {
+  id: number;
   title: string;
   completed: boolean;
   onToggle: () => void;
   onDelete: () => void;
 };
 
+import Link from "next/link";
+
 export default function TaskCard({
   title,
   completed,
   onToggle,
   onDelete,
+  id,
 }: TaskCardProps) {
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md sm:flex-row sm:items-center sm:justify-between">
       <span
-        className={`min-w-0 flex-1 break-words text-sm font-medium sm:text-base ${
+        className={`min-w-0 flex-1 wrap-break-word text-sm font-medium sm:text-base ${
           completed ? "text-gray-400 line-through" : "text-gray-800"
         }`}
       >
-        {title}
+        <Link
+          href={`/tasks/${id}`}
+          className="font-medium text-blue-600 hover:underline"
+        >
+          {title}
+        </Link>
       </span>
 
       <div className="flex flex-wrap items-center gap-2">

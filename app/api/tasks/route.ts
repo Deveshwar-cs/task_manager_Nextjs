@@ -11,43 +11,57 @@ export async function GET() {
     });
 
     return NextResponse.json({success: true, data: tasks}, {status: 200});
-  } catch (error) {
-    console.log("Failed to fetch tasks:", error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Failed to fetch tasks:", error.message);
+    } else {
+      console.error("Failed to fetch tasks:", error);
+    }
 
     return NextResponse.json({message: "Failed to fetch tasks"}, {status: 500});
   }
 }
 
 // POST: Create a new task in postgreSQL
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const title = body.title?.trim();
 
-    if (!title) {
+    if (typeof body.title !== "string" || body.title.trim() === "") {
       return NextResponse.json(
-        {message: "Task title is required"},
+        {
+          success: false,
+          message: "Title must be a non-empty string",
+        },
         {status: 400},
       );
     }
 
+    const title = body.title.trim();
+
     const task = await prisma.task.create({
-      data: {
-        title,
-      },
+      data: {title},
     });
 
     return NextResponse.json(
-      {data: task, message: "Successfully created!!", success: true},
       {
-        status: 201,
+        data: task,
+        message: "Successfully created!",
+        success: true,
       },
+      {status: 201},
     );
-  } catch (error) {
-    console.error("Failed to create task:", error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Failed to create task", error.message);
+    } else {
+      console.error("Failed to create task", error);
+    }
 
     return NextResponse.json(
       {
+        success: false,
         message: "Failed to create a task",
       },
       {status: 500},

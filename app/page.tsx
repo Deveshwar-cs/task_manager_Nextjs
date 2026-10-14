@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import ServerTaskList from "./components/ServerTaskList";
 import TaskList from "./components/TaskList";
 
 export default function Home() {
@@ -16,6 +17,9 @@ export default function Home() {
         </div>
 
         <TaskList />
+
+        <h1>Task list showed by direct calling</h1>
+        <ServerTaskList />
       </section>
     </main>
   );
