@@ -5,14 +5,16 @@ export type Task = {
   createdAt?: Date;
 };
 
-export type apiResponse<T> = {
+export type ApiResponse<T> = {
   success: boolean;
   data: T;
   message?: string;
 };
 
-export type apiDataResponse<T> = {
+export type ApiDataResponse<T> = {
   success: boolean;
   data: T;
   message?: string;
 };
+
+export type CreateTask
