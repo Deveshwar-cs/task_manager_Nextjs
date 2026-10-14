@@ -13,6 +13,7 @@ import type {
   NewTask,
   UpdateTaskData,
 } from "../type/task";
+// import {statusLabels} from "../type/task";
 
 type TaskFilter = "all" | "pending" | "completed";
 
@@ -22,7 +23,8 @@ export default function TaskList() {
   const [filter, setFilter] = useState<TaskFilter>("all");
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  // const label = statusLabels["pending"];
+  // console.log(label);
   useEffect(() => {
     async function loadTasks() {
       try {

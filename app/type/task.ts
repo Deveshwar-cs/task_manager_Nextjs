@@ -41,3 +41,11 @@ export type UpdateTaskRequest = {
 export type NewTask = Pick<Task, "title">;
 
 export type UpdateTaskData = Partial<Pick<Task, "title" | "completed">>;
+
+export type TaskStatus = "pending" | "completed" | "in-progress";
+
+export const statusLabels: Record<TaskStatus, string> = {
+  pending: "Waiting to start",
+  completed: "Finished",
+  "in-progress": "Currently working",
+};
