@@ -33,3 +33,9 @@ export type CreateTaskResponse = CreateTaskSuccess | CreateTaskFailure;
 export type CreateTaskRequest = {
   title: string;
 };
+
+export type UpdateTaskRequest = {
+  completed: boolean;
+};
+
+export type NewTask = Pick<Task, "title">;

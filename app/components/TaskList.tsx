@@ -9,6 +9,8 @@ import type {
   ApiResponse,
   CreateTaskResponse,
   CreateTaskRequest,
+  UpdateTaskRequest,
+  NewTask,
 } from "../type/task";
 
 type TaskFilter = "all" | "pending" | "completed";
@@ -63,7 +65,7 @@ export default function TaskList() {
     try {
       setError(null);
 
-      const payload: CreateTaskRequest = {title};
+      const payload: NewTask = {title};
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
@@ -94,14 +96,16 @@ export default function TaskList() {
     try {
       setError(null);
 
+      const payload: UpdateTaskRequest = {
+        completed: !task.completed,
+      };
+
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          completed: !task.completed,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const result: ApiResponse<Task> = await response.json();
