@@ -13,9 +13,15 @@ import type {
   NewTask,
   UpdateTaskData,
 } from "../type/task";
+
+import {handleApiResponse} from "../lib/api";
 // import {statusLabels} from "../type/task";
 
 type TaskFilter = "all" | "pending" | "completed";
+
+function handleUnexpectedError(message: string): never {
+  throw new Error(message);
+}
 
 export default function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -25,16 +31,20 @@ export default function TaskList() {
   const [error, setError] = useState<string | null>(null);
   // const label = statusLabels["pending"];
   // console.log(label);
+
+  // type TaskKey = keyof Task;
+
+  // const key: TaskKey = "name";
+
+  console.log(key);
+
   useEffect(() => {
     async function loadTasks() {
       try {
-        const response = await fetch("api/tasks");
+        const response = await fetch("/api/tasks");
 
-        if (!response.ok) {
-          throw new Error("Failed to load tasks");
-        }
-
-        const result: ApiDataResponse<Task[]> = await response.json();
+        const result =
+          await handleApiResponse<ApiDataResponse<Task[]>>(response);
 
         setTasks(result.data);
       } catch {
@@ -43,8 +53,10 @@ export default function TaskList() {
         setLoading(false);
       }
     }
+
     loadTasks();
   }, []);
+
   const totalTasks = tasks.length || 0;
 
   const completedTasks = tasks.filter((task) => task.completed).length;
@@ -80,7 +92,7 @@ export default function TaskList() {
       const result: CreateTaskResponse = await response.json();
 
       if (!response.ok || !result.success || !result.data) {
-        throw new Error(result.message ?? "Failed to create task");
+        handleUnexpectedError("Failed to create task");
       }
       setTasks((currentTasks) => [...currentTasks, result.data!]);
 
