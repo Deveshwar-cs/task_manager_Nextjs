@@ -39,3 +39,5 @@ export type UpdateTaskRequest = {
 };
 
 export type NewTask = Pick<Task, "title">;
+
+export type UpdateTaskData = Partial<Pick<Task, "title" | "completed">>;

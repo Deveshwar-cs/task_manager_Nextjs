@@ -8,9 +8,10 @@ import type {
   ApiDataResponse,
   ApiResponse,
   CreateTaskResponse,
-  CreateTaskRequest,
-  UpdateTaskRequest,
+  // CreateTaskRequest,
+  // UpdateTaskRequest,
   NewTask,
+  UpdateTaskData,
 } from "../type/task";
 
 type TaskFilter = "all" | "pending" | "completed";
@@ -96,7 +97,7 @@ export default function TaskList() {
     try {
       setError(null);
 
-      const payload: UpdateTaskRequest = {
+      const payload: UpdateTaskData = {
         completed: !task.completed,
       };
 
