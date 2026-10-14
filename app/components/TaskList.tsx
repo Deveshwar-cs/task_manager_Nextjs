@@ -36,7 +36,12 @@ export default function TaskList() {
 
   // const key: TaskKey = "name";
 
-  console.log(key);
+  // console.log(key);
+  // function getLength<T extends {length: number}>(value: T): number {
+  //   return value.length;
+  // }
+  // const value = getLength("worked");
+  // console.log(value);
 
   useEffect(() => {
     async function loadTasks() {

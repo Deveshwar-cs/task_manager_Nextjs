@@ -1,6 +1,6 @@
 import {prisma} from "@/app/lib/prisma";
 import {NextResponse} from "next/server";
-
+import {createTaskSchema} from "@/app/lib/validations/task";
 // Fetch all tasks from PosgreSQL
 export async function GET() {
   try {
@@ -9,7 +9,6 @@ export async function GET() {
         createdAt: "desc",
       },
     });
-
     return NextResponse.json({success: true, data: tasks}, {status: 200});
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -26,43 +25,41 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body: unknown = await request.json();
 
-    if (typeof body.title !== "string" || body.title.trim() === "") {
+    const result = createTaskSchema.safeParse(body);
+    if (!result.success) {
       return NextResponse.json(
         {
           success: false,
-          message: "Title must be a non-empty string",
+          message: "Invalid task data",
+          errors: result.error.flatten(),
         },
         {status: 400},
       );
     }
 
-    const title = body.title.trim();
-
     const task = await prisma.task.create({
-      data: {title},
+      data: {
+        title: result.data.title,
+      },
     });
 
     return NextResponse.json(
       {
-        data: task,
-        message: "Successfully created!",
         success: true,
+        message: "Successfully created!",
+        data: task,
       },
       {status: 201},
     );
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error("Failed to create task", error.message);
-    } else {
-      console.error("Failed to create task", error);
-    }
+    console.error("Failed to create task:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to create a task",
+        message: "An unexpected error occurred while creating the task",
       },
       {status: 500},
     );

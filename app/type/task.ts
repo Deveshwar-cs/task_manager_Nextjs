@@ -3,6 +3,7 @@ export type Task = {
   title: string;
   completed: boolean;
   createdAt?: Date;
+  status: KanbanStatus;
 };
 
 export type ApiResponse<T> = {
@@ -49,3 +50,5 @@ export const statusLabels: Record<TaskStatus, string> = {
   completed: "Finished",
   "in-progress": "Currently working",
 };
+
+export type KanbanStatus = "TODO" | "IN_PROGRESS" | "DONE";

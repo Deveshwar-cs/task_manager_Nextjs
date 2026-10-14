@@ -1,5 +1,6 @@
 import {prisma} from "@/app/lib/prisma";
 import {NextResponse} from "next/server";
+import {updateTaskSchema} from "@/app/lib/validations/task";
 
 type RouteContext = {
   params: Promise<{id: string}>;
@@ -17,22 +18,35 @@ export async function PATCH(request: Request, {params}: RouteContext) {
 
     const body = await request.json();
 
-    if (typeof body.completed !== "boolean") {
+    const result = updateTaskSchema.safeParse(body);
+
+    if (!result.success) {
       return NextResponse.json(
         {
-          message: "Completed must be boolean",
+          success: false,
+          message: "Invalid task data",
+          errors: result.error.flatten(),
         },
         {status: 400},
       );
     }
 
+    const updateData =
+      "status" in result.data
+        ? {
+            status: result.data.status,
+            completed: result.data.status === "DONE",
+          }
+        : {
+            completed: result.data.completed,
+            status: result.data.completed ? "DONE" : "TODO",
+          };
+
     const task = await prisma.task.update({
       where: {
         id: taskId,
       },
-      data: {
-        completed: body.completed,
-      },
+      data: updateData,
     });
 
     return NextResponse.json({
